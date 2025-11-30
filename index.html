@@ -2,51 +2,58 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>নামাজের সময়সূচি</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="container">
-        <h2>নামাজের সময়সূচি</h2>
+<div class="header">
+    <h1>🕌 আজকের নামাজের সময়সূচি</h1>
+</div>
 
-        <div class="row">
-            <label>Fajr:</label>
-            <input type="time" id="fajr">
-            <input type="time" id="fajr_j">
-        </div>
+<div class="container">
+    <table>
+        <tr>
+            <th>নামাজ</th>
+            <th>আজান</th>
+            <th>জামাত</th>
+        </tr>
 
-        <div class="row">
-            <label>Zuhr:</label>
-            <input type="time" id="zuhr">
-            <input type="time" id="zuhr_j">
-        </div>
+        <tr>
+            <td>ফজর</td>
+            <td><input type="time" id="fajr"></td>
+            <td><input type="time" id="fajr_j"></td>
+        </tr>
 
-        <div class="row">
-            <label>Asr:</label>
-            <input type="time" id="asr">
-            <input type="time" id="asr_j">
-        </div>
+        <tr>
+            <td>যোহর</td>
+            <td><input type="time" id="zuhr"></td>
+            <td><input type="time" id="zuhr_j"></td>
+        </tr>
 
-        <div class="row">
-            <label>Maghrib:</label>
-            <input type="time" id="maghrib">
-            <input type="time" id="maghrib_j">
-        </div>
+        <tr>
+            <td>আসর</td>
+            <td><input type="time" id="asr"></td>
+            <td><input type="time" id="asr_j"></td>
+        </tr>
 
-        <div class="row">
-            <label>Isha:</label>
-            <input type="time" id="isha">
-            <input type="time" id="isha_j">
-        </div>
+        <tr>
+            <td>মাগরিব</td>
+            <td><input type="time" id="maghrib"></td>
+            <td><input type="time" id="maghrib_j"></td>
+        </tr>
 
-        <button onclick="saveTime()">Save</button>
+        <tr>
+            <td>ইশা</td>
+            <td><input type="time" id="isha"></td>
+            <td><input type="time" id="isha_j"></td>
+        </tr>
 
-        <h3>Saved Timings</h3>
-        <div id="output"></div>
-    </div>
+    </table>
 
-    <script src="script.js"></script>
+    <button onclick="saveTimes()">সংরক্ষণ করুন</button>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
