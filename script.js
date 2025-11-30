@@ -1,48 +1,84 @@
-// 🔹 শুধুমাত্র আপনি এডিট করতে পারবেন
-let isAdmin = true; // false করলে পাবলিক শুধু দেখবে
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-window.onload = function () {
-    document.querySelectorAll("input[type=time]").forEach(input => {
-        input.readOnly = !isAdmin;
-    });
-
-    let saved = localStorage.getItem("namazTimes");
-    if (saved) {
-        let t = JSON.parse(saved);
-        document.getElementById("fajr").value = t.fajr;
-        document.getElementById("fajr_j").value = t.fajr_j;
-        document.getElementById("zuhr").value = t.zuhr;
-        document.getElementById("zuhr_j").value = t.zuhr_j;
-        document.getElementById("asr").value = t.asr;
-        document.getElementById("asr_j").value = t.asr_j;
-        document.getElementById("maghrib").value = t.maghrib;
-        document.getElementById("maghrib_j").value = t.maghrib_j;
-        document.getElementById("isha").value = t.isha;
-        document.getElementById("isha_j").value = t.isha_j;
-    }
-
-    // শুধু admin দেখলে save button enable
-    document.getElementById("saveBtn").style.display = isAdmin ? "block" : "none";
+// Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyA2e16SWt6tM3q76M8deUWiEz3cNqHCc7A",
+  authDomain: "namaz-schedule.firebaseapp.com",
+  databaseURL: "https://namaz-schedule-default-rtdb.firebaseio.com",
+  projectId: "namaz-schedule",
+  storageBucket: "namaz-schedule.appspot.com",
+  messagingSenderId: "242449317130",
+  appId: "1:242449317130:web:c6945e81f906909a258ef3",
+  measurementId: "G-7N0EZFMTTQ"
 };
 
-// 🔹 সময় সংরক্ষণ
-function saveTimes() {
-    let times = {
-        fajr: document.getElementById("fajr").value,
-        fajr_j: document.getElementById("fajr_j").value,
-        zuhr: document.getElementById("zuhr").value,
-        zuhr_j: document.getElementById("zuhr_j").value,
-        asr: document.getElementById("asr").value,
-        asr_j: document.getElementById("asr_j").value,
-        maghrib: document.getElementById("maghrib").value,
-        maghrib_j: document.getElementById("maghrib_j").value,
-        isha: document.getElementById("isha").value,
-        isha_j: document.getElementById("isha_j").value
-    };
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+const auth = getAuth(app);
 
-    localStorage.setItem("namazTimes", JSON.stringify(times));
-    alert("সময়গুলো সংরক্ষণ করা হয়েছে!");
-}
+let isAdmin = false;
+let dataLoaded = false;
 
-// Save Button Click
-document.getElementById("saveBtn").addEventListener("click", saveTimes);
+window.addEventListener('DOMContentLoaded', () => {
+    const loginForm = document.getElementById('loginForm');
+    const emailInput = document.getElementById('email');
+    const passInput = document.getElementById('password');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const inputs = document.querySelectorAll("input[type=time]");
+
+    // Initially Public mode
+    inputs.forEach(i => i.readOnly = true);
+    logoutBtn.style.display = 'none';
+
+    // Listen auth state
+    onAuthStateChanged(auth, user => {
+        if(user){
+            isAdmin = true;
+            inputs.forEach(i => i.readOnly = false);
+            loginForm.style.display = 'none';
+            logoutBtn.style.display = 'block';
+        } else {
+            isAdmin = false;
+            inputs.forEach(i => i.readOnly = true);
+            loginForm.style.display = 'block';
+            logoutBtn.style.display = 'none';
+        }
+    });
+
+    // Login
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        signInWithEmailAndPassword(auth, emailInput.value, passInput.value)
+            .catch(err => alert(err.message));
+    });
+
+    // Logout
+    logoutBtn.addEventListener('click', () => {
+        signOut(auth);
+    });
+
+    // Load saved times from Firebase
+    const dbRef = ref(database);
+    get(child(dbRef, 'namazTimes')).then(snapshot => {
+        if(snapshot.exists()){
+            const t = snapshot.val();
+            inputs.forEach(i => {
+                if(t[i.id]) i.value = t[i.id];
+            });
+        }
+        dataLoaded = true;
+    }).catch(console.error);
+
+    // Auto-save on input change
+    inputs.forEach(input => {
+        input.addEventListener('input', () => {
+            if(!dataLoaded || !isAdmin) return;
+            const times = {};
+            inputs.forEach(i => times[i.id] = i.value || "");
+            set(ref(database, 'namazTimes'), times).catch(console.error);
+        });
+    });
+});
