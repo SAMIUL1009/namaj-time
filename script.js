@@ -1,84 +1,54 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-
 // Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyA2e16SWt6tM3q76M8deUWiEz3cNqHCc7A",
   authDomain: "namaz-schedule.firebaseapp.com",
-  databaseURL: "https://namaz-schedule-default-rtdb.firebaseio.com",
   projectId: "namaz-schedule",
-  storageBucket: "namaz-schedule.appspot.com",
-  messagingSenderId: "242449317130",
-  appId: "1:242449317130:web:c6945e81f906909a258ef3",
-  measurementId: "G-7N0EZFMTTQ"
+  databaseURL: "https://namaz-schedule-default-rtdb.firebaseio.com"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
-const auth = getAuth(app);
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
 
-let isAdmin = false;
-let dataLoaded = false;
+// --------- LOGIN ----------
+function login() {
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
 
-window.addEventListener('DOMContentLoaded', () => {
-    const loginForm = document.getElementById('loginForm');
-    const emailInput = document.getElementById('email');
-    const passInput = document.getElementById('password');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const inputs = document.querySelectorAll("input[type=time]");
+    auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+            document.getElementById("loginBox").style.display = "none";
+            document.getElementById("scheduleBox").style.display = "block";
+            loadTimes();
+        })
+        .catch(() => alert("ভুল Email বা Password!"));
+}
 
-    // Initially Public mode
-    inputs.forEach(i => i.readOnly = true);
-    logoutBtn.style.display = 'none';
+// --------- LOAD TIMES ----------
+function loadTimes() {
+    db.ref("times").on("value", snap => {
+        let t = snap.val();
 
-    // Listen auth state
-    onAuthStateChanged(auth, user => {
-        if(user){
-            isAdmin = true;
-            inputs.forEach(i => i.readOnly = false);
-            loginForm.style.display = 'none';
-            logoutBtn.style.display = 'block';
-        } else {
-            isAdmin = false;
-            inputs.forEach(i => i.readOnly = true);
-            loginForm.style.display = 'block';
-            logoutBtn.style.display = 'none';
-        }
+        document.getElementById("fajr").value = t.fajr;
+        document.getElementById("fajr_j").value = t.fajr_j;
+        document.getElementById("zuhr").value = t.zuhr;
+        document.getElementById("zuhr_j").value = t.zuhr_j;
+        document.getElementById("asr").value = t.asr;
+        document.getElementById("asr_j").value = t.asr_j;
+        document.getElementById("maghrib").value = t.maghrib;
+        document.getElementById("maghrib_j").value = t.maghrib_j;
+        document.getElementById("isha").value = t.isha;
+        document.getElementById("isha_j").value = t.isha_j;
     });
+}
 
-    // Login
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        signInWithEmailAndPassword(auth, emailInput.value, passInput.value)
-            .catch(err => alert(err.message));
-    });
+// --------- AUTO SAVE ----------
+function autoSave(id) {
+    let value = document.getElementById(id).value;
+    db.ref("times/" + id).set(value);
+}
 
-    // Logout
-    logoutBtn.addEventListener('click', () => {
-        signOut(auth);
-    });
-
-    // Load saved times from Firebase
-    const dbRef = ref(database);
-    get(child(dbRef, 'namazTimes')).then(snapshot => {
-        if(snapshot.exists()){
-            const t = snapshot.val();
-            inputs.forEach(i => {
-                if(t[i.id]) i.value = t[i.id];
-            });
-        }
-        dataLoaded = true;
-    }).catch(console.error);
-
-    // Auto-save on input change
-    inputs.forEach(input => {
-        input.addEventListener('input', () => {
-            if(!dataLoaded || !isAdmin) return;
-            const times = {};
-            inputs.forEach(i => times[i.id] = i.value || "");
-            set(ref(database, 'namazTimes'), times).catch(console.error);
-        });
-    });
+["fajr","fajr_j","zuhr","zuhr_j","asr","asr_j","maghrib","maghrib_j","isha","isha_j"]
+.forEach(id => {
+    document.getElementById(id).addEventListener("change", () => autoSave(id));
 });
