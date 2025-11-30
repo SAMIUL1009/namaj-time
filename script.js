@@ -11,7 +11,7 @@ const auth = firebase.auth();
 const db = firebase.database();
 
 /* ADMIN EMAIL */
-const adminEmail = "admin@gmail.com";  // আপনার admin email দিন
+const adminEmail = "samiulsk527@gmail.com";  // আপনার admin email দিন
 
 /* -------- LOGIN -------- */
 function login() {
@@ -64,3 +64,4 @@ function autoSave(id) {
 .forEach(id => {
     document.getElementById(id).addEventListener("change", () => autoSave(id));
 });
+
