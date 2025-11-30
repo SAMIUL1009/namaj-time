@@ -5,10 +5,10 @@
 <title>নামাজের সময়সূচি</title>
 <link rel="stylesheet" href="style.css">
 
-<!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
 // Firebase Config
 const firebaseConfig = {
@@ -25,49 +25,86 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
+const auth = getAuth(app);
 
-let isAdmin = true; // false করলে পাবলিক শুধু দেখবে
+let isAdmin = false;
+let dataLoaded = false;
 
 window.addEventListener('DOMContentLoaded', () => {
+    const loginForm = document.getElementById('loginForm');
+    const emailInput = document.getElementById('email');
+    const passInput = document.getElementById('password');
+    const logoutBtn = document.getElementById('logoutBtn');
     const inputs = document.querySelectorAll("input[type=time]");
-    inputs.forEach(input => input.readOnly = !isAdmin);
+
+    // Initially Public mode
+    inputs.forEach(i => i.readOnly = true);
+    logoutBtn.style.display = 'none';
+
+    // Listen auth state
+    onAuthStateChanged(auth, user => {
+        if(user){
+            isAdmin = true;
+            inputs.forEach(i => i.readOnly = false);
+            loginForm.style.display = 'none';
+            logoutBtn.style.display = 'block';
+        } else {
+            isAdmin = false;
+            inputs.forEach(i => i.readOnly = true);
+            loginForm.style.display = 'block';
+            logoutBtn.style.display = 'none';
+        }
+    });
+
+    // Login
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        signInWithEmailAndPassword(auth, emailInput.value, passInput.value)
+            .catch(err => alert(err.message));
+    });
+
+    // Logout
+    logoutBtn.addEventListener('click', () => {
+        signOut(auth);
+    });
 
     // Load saved times from Firebase
     const dbRef = ref(database);
-    get(child(dbRef, 'namazTimes')).then((snapshot) => {
-        if(snapshot.exists()) {
+    get(child(dbRef, 'namazTimes')).then(snapshot => {
+        if(snapshot.exists()){
             const t = snapshot.val();
-            inputs.forEach(input => {
-                if(t[input.id]) {           // শুধুমাত্র Firebase এ value থাকলে
-                    input.value = t[input.id];
-                }
+            inputs.forEach(i => {
+                if(t[i.id]) i.value = t[i.id];
             });
         }
+        dataLoaded = true;
     }).catch(console.error);
 
     // Auto-save on input change
-    if(isAdmin){
-        inputs.forEach(input => {
-            input.addEventListener('input', () => {
-                const times = {};
-                inputs.forEach(i => { 
-                    times[i.id] = i.value || ""; 
-                });
-                set(ref(database, 'namazTimes'), times)
-                    .catch(console.error);
-            });
+    inputs.forEach(input => {
+        input.addEventListener('input', () => {
+            if(!dataLoaded || !isAdmin) return;
+            const times = {};
+            inputs.forEach(i => times[i.id] = i.value || "");
+            set(ref(database, 'namazTimes'), times).catch(console.error);
         });
-    }
+    });
 });
 </script>
 </head>
 <body>
 
 <div class="mosque-name">নওদা সিন্দুরাপাড়া মসজিদ</div>
+<div class="header"><h1>🕌 আজকের নামাজের সময়সূচি</h1></div>
 
-<div class="header">
-    <h1>🕌 আজকের নামাজের সময়সূচি</h1>
+<!-- Login Form -->
+<div id="loginForm" class="login-form">
+    <input type="email" id="email" placeholder="Admin Email" required><br>
+    <input type="password" id="password" placeholder="Password" required><br>
+    <button type="submit">Login</button>
 </div>
+
+<button id="logoutBtn">Logout</button>
 
 <div class="container">
     <table>
