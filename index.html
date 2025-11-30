@@ -29,31 +29,30 @@ const database = getDatabase(app);
 let isAdmin = true; // false করলে পাবলিক শুধু দেখবে
 
 window.addEventListener('DOMContentLoaded', () => {
-    // ইনপুট readonly control
     const inputs = document.querySelectorAll("input[type=time]");
-    inputs.forEach(input => {
-        input.readOnly = !isAdmin;
-    });
+    inputs.forEach(input => input.readOnly = !isAdmin);
 
-    // Firebase থেকে ডেটা লোড
+    // Load saved times from Firebase
     const dbRef = ref(database);
     get(child(dbRef, 'namazTimes')).then((snapshot) => {
         if(snapshot.exists()) {
             const t = snapshot.val();
-            for(let id in t){
-                if(document.getElementById(id)) {
-                    document.getElementById(id).value = t[id];
+            inputs.forEach(input => {
+                if(t[input.id]) {           // শুধুমাত্র Firebase এ value থাকলে
+                    input.value = t[input.id];
                 }
-            }
+            });
         }
     }).catch(console.error);
 
-    // যেকোনো টাইম চেঞ্জ হলে অটো সেভ
+    // Auto-save on input change
     if(isAdmin){
         inputs.forEach(input => {
             input.addEventListener('input', () => {
                 const times = {};
-                inputs.forEach(i => { times[i.id] = i.value; });
+                inputs.forEach(i => { 
+                    times[i.id] = i.value || ""; 
+                });
                 set(ref(database, 'namazTimes'), times)
                     .catch(console.error);
             });
