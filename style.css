@@ -7,6 +7,18 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
+/* Mosque Name */
+.mosque-name {
+    text-align: center;
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(0,0,0,0.6);
+    color: gold;
+    font-size: 22px;
+    border-bottom: 2px solid gold;
+    letter-spacing: 1px;
+}
+
 /* Header */
 .header {
     text-align: center;
@@ -40,7 +52,7 @@ table {
 }
 
 th {
-    background: rgba(0, 130, 0, 0.8);
+    background: rgba(0, 130, 0, 0.85);
     color: white;
     padding: 12px;
     font-size: 17px;
