@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>নামাজ ও জামাতের সময় সূচি</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>নামাজ ও জামাতের সময় সূচি</h1>
+        <p class="lead">আপনি আজান ও জামাতের সময় ম্যানুয়ালি সেট করতে পারবেন।</p>
+      </div>
+      <div class="muted" id="todayDate"></div>
+    </header>
+
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>নামাজ</th>
+            <th>আজান</th>
+            <th>জামাত</th>
+            <th>স্ট্যাটাস</th>
+          </tr>
+        </thead>
+        <tbody id="prayerTable"></tbody>
+      </table>
+
+      <div class="controls">
+        <button id="saveBtn">Save</button>
+        <button id="resetBtn" class="ghost">Reset</button>
+      </div>
+
+      <div class="next-box">
+        <div class="next-info">
+          <div>
+            <div class="muted">পরবর্তী</div>
+            <div id="nextPrayerName" class="pill">—</div>
+          </div>
+          <div>
+            <div class="muted">সময়</div>
+            <div id="nextPrayerTime" class="muted">—</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="muted">কাউন্টডাউন</div>
+          <div id="countdown" class="countdown">--:--:--</div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div>Local save only. No server needed.</div>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
