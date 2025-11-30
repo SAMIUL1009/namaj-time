@@ -1,87 +1,70 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <title>নামাজের সময়সূচি</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>নামাজের সময়সূচি</title>
+<link rel="stylesheet" href="style.css">
 
-    <!-- Firebase SDKs -->
-    <script type="module">
-        // Import Firebase
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-        // Firebase config
-        const firebaseConfig = {
-          apiKey: "AIzaSyA2e16SWt6tM3q76M8deUWiEz3cNqHCc7A",
-          authDomain: "namaz-schedule.firebaseapp.com",
-          databaseURL: "https://namaz-schedule-default-rtdb.firebaseio.com",
-          projectId: "namaz-schedule",
-          storageBucket: "namaz-schedule.appspot.com",
-          messagingSenderId: "242449317130",
-          appId: "1:242449317130:web:c6945e81f906909a258ef3",
-          measurementId: "G-7N0EZFMTTQ"
-        };
+// Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyA2e16SWt6tM3q76M8deUWiEz3cNqHCc7A",
+  authDomain: "namaz-schedule.firebaseapp.com",
+  databaseURL: "https://namaz-schedule-default-rtdb.firebaseio.com",
+  projectId: "namaz-schedule",
+  storageBucket: "namaz-schedule.appspot.com",
+  messagingSenderId: "242449317130",
+  appId: "1:242449317130:web:c6945e81f906909a258ef3",
+  measurementId: "G-7N0EZFMTTQ"
+};
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
 
-        let isAdmin = true; // false করলে পাবলিক শুধু দেখবে
+let isAdmin = true; // false করলে পাবলিক শুধু দেখবে
 
-        window.onload = function () {
-            // Admin control
-            document.querySelectorAll("input[type=time]").forEach(input => {
-                input.readOnly = !isAdmin;
-            });
-            document.getElementById("saveBtn").style.display = isAdmin ? "block" : "none";
+window.addEventListener('DOMContentLoaded', () => {
+    // ইনপুট readonly control
+    const inputs = document.querySelectorAll("input[type=time]");
+    inputs.forEach(input => {
+        input.readOnly = !isAdmin;
+    });
 
-            // Load times from Firebase
-            const dbRef = ref(database);
-            get(child(dbRef, 'namazTimes')).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const t = snapshot.val();
-                    document.getElementById("fajr").value = t.fajr;
-                    document.getElementById("fajr_j").value = t.fajr_j;
-                    document.getElementById("zuhr").value = t.zuhr;
-                    document.getElementById("zuhr_j").value = t.zuhr_j;
-                    document.getElementById("asr").value = t.asr;
-                    document.getElementById("asr_j").value = t.asr_j;
-                    document.getElementById("maghrib").value = t.maghrib;
-                    document.getElementById("maghrib_j").value = t.maghrib_j;
-                    document.getElementById("isha").value = t.isha;
-                    document.getElementById("isha_j").value = t.isha_j;
+    // Firebase থেকে ডেটা লোড
+    const dbRef = ref(database);
+    get(child(dbRef, 'namazTimes')).then((snapshot) => {
+        if(snapshot.exists()) {
+            const t = snapshot.val();
+            for(let id in t){
+                if(document.getElementById(id)) {
+                    document.getElementById(id).value = t[id];
                 }
-            }).catch((error) => {
-                console.error(error);
-            });
-        };
+            }
+        }
+    }).catch(console.error);
 
-        // Save button
-        window.saveTimes = function() {
-            const times = {
-                fajr: document.getElementById("fajr").value,
-                fajr_j: document.getElementById("fajr_j").value,
-                zuhr: document.getElementById("zuhr").value,
-                zuhr_j: document.getElementById("zuhr_j").value,
-                asr: document.getElementById("asr").value,
-                asr_j: document.getElementById("asr_j").value,
-                maghrib: document.getElementById("maghrib").value,
-                maghrib_j: document.getElementById("maghrib_j").value,
-                isha: document.getElementById("isha").value,
-                isha_j: document.getElementById("isha_j").value
-            };
-            set(ref(database, 'namazTimes'), times)
-                .then(() => { alert("সময়গুলো Firebase এ সংরক্ষণ করা হয়েছে!"); })
-                .catch((error) => { console.error(error); });
-        };
-    </script>
+    // যেকোনো টাইম চেঞ্জ হলে অটো সেভ
+    if(isAdmin){
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                const times = {};
+                inputs.forEach(i => { times[i.id] = i.value; });
+                set(ref(database, 'namazTimes'), times)
+                    .catch(console.error);
+            });
+        });
+    }
+});
+</script>
 </head>
 <body>
 
-<div class="mosque-name">
-    নওদা সিন্দুরাপাড়া মসজিদ
-</div>
+<div class="mosque-name">নওদা সিন্দুরাপাড়া মসজিদ</div>
 
 <div class="header">
     <h1>🕌 আজকের নামাজের সময়সূচি</h1>
@@ -94,39 +77,32 @@
             <th>আজান</th>
             <th>জামাত</th>
         </tr>
-
         <tr>
             <td>ফজর</td>
             <td><input type="time" id="fajr"></td>
             <td><input type="time" id="fajr_j"></td>
         </tr>
-
         <tr>
             <td>যোহর</td>
             <td><input type="time" id="zuhr"></td>
             <td><input type="time" id="zuhr_j"></td>
         </tr>
-
         <tr>
             <td>আসর</td>
             <td><input type="time" id="asr"></td>
             <td><input type="time" id="asr_j"></td>
         </tr>
-
         <tr>
             <td>মাগরিব</td>
             <td><input type="time" id="maghrib"></td>
             <td><input type="time" id="maghrib_j"></td>
         </tr>
-
         <tr>
             <td>ইশা</td>
             <td><input type="time" id="isha"></td>
             <td><input type="time" id="isha_j"></td>
         </tr>
     </table>
-
-    <button id="saveBtn" onclick="saveTimes()">সংরক্ষণ করুন</button>
 </div>
 
 </body>
