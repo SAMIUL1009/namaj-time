@@ -63,31 +63,7 @@ input[type=time] {
     border: none;
     outline: none;
 }
-button {
-    margin-top: 15px;
-    width: 100%;
-    padding: 14px;
-    font-size: 18px;
-    background: linear-gradient(135deg, #0a8f0a, #064f06);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    letter-spacing: 1px;
-}
-button:hover {
-    background: linear-gradient(135deg, #0f9f0f, #0a6d0a);
-}
 @media (max-width: 480px) {
-    th, td {
-        padding: 10px;
-        font-size: 14px;
-    }
-    button {
-        font-size: 16px;
-        padding: 12px;
-    }
-    input[type=time] {
-        font-size: 14px;
-    }
+    th, td { padding: 10px; font-size: 14px; }
+    input[type=time] { font-size: 14px; }
 }
