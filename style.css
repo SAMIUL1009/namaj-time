@@ -14,7 +14,7 @@ body {
     padding: 10px;
     background: rgba(0,0,0,0.6);
     color: gold;
-    font-size: 22px;
+    font-size: 30px;
     border-bottom: 2px solid gold;
     letter-spacing: 1px;
 }
@@ -111,3 +111,4 @@ button:hover {
         font-size: 14px;
     }
 }
+
