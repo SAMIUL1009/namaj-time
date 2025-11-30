@@ -2,7 +2,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: Arial;
-    background-image: url('mosque.jpg'); /* আপনার ব্যাকগ্রাউন্ড */
+    background-image: url('./mosque.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -58,3 +58,4 @@ button:hover {
     background: rgba(255,255,255,0.2);
     border-radius: 10px;
 }
+
