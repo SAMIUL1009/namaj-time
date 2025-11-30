@@ -1,102 +1,60 @@
-:root{
-  --bg:#f6f8fb;
-  --card:#ffffff;
-  --accent:#0b6efd;
-  --muted:#6b7280;
-  font-family: system-ui, "Noto Sans Bengali", Arial;
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial;
+    background-image: url('mosque.jpg'); /* আপনার ব্যাকগ্রাউন্ড */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
-body{
-  margin:0;
-  background:#eef2ff;
-  padding:24px;
+.container {
+    background: rgba(0,0,0,0.6);
+    padding: 20px;
+    border-radius: 15px;
+    color: white;
+    max-width: 450px;
+    margin: 50px auto;
+    box-shadow: 0 0 10px #000;
 }
 
-.container{
-  max-width:900px;
-  margin:auto;
+h2, h3 {
+    text-align: center;
 }
 
-header{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:20px;
+.row {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
 }
 
-h1{margin:0;font-size:22px}
-.lead{margin:4px 0 0;color:var(--muted);font-size:14px}
-
-.card{
-  background:var(--card);
-  padding:20px;
-  border-radius:12px;
-  box-shadow:0 6px 20px rgba(0,0,0,0.06);
+.row label {
+    width: 60px;
 }
 
-table{
-  width:100%;
-  border-collapse:collapse;
+.row input {
+    width: 40%;
+    padding: 5px;
+    border-radius: 6px;
+    border: none;
+}
+button {
+    width: 100%;
+    padding: 10px;
+    background: #00ffbb;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+button:hover {
+    background: #00cc99;
 }
 
-th,td{
-  padding:12px;
-  border-bottom:1px solid #eef2ff;
-}
-
-th{color:var(--muted);font-size:14px}
-
-.time-input{
-  padding:6px;
-  width:120px;
-  border:1px solid #dce3ee;
-  border-radius:6px;
-}
-
-.controls{
-  margin-top:16px;
-  display:flex;
-  gap:10px;
-}
-
-button{
-  padding:8px 14px;
-  border:0;
-  border-radius:8px;
-  background:var(--accent);
-  color:white;
-  font-weight:600;
-  cursor:pointer;
-}
-
-button.ghost{
-  background:white;
-  border:2px solid var(--accent);
-  color:var(--accent);
-}
-
-.next-box{
-  margin-top:20px;
-  padding:14px;
-  border-radius:10px;
-  background:#f8fafc;
-  display:flex;
-  justify-content:space-between;
-}
-
-.pill{
-  background:#e2e8f0;
-  padding:6px 10px;
-  border-radius:8px;
-}
-
-.countdown{
-  font-size:20px;
-  font-weight:700;
-}
-
-footer{
-  margin-top:20px;
-  font-size:13px;
-  text-align:center;
-  color:var(--muted);
+#output {
+    margin-top: 20px;
+    padding: 10px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
 }
