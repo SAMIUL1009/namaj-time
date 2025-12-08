@@ -1,61 +1,36 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>নামাজের সময়সূচি</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Prayer Times</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div class="app">
+    <h1>Prayer Times</h1>
 
-<div class="mosque-name">
-    <h2>নওদা সিন্দুরাপাড়া মসজিদ</h2>
-</div>
+    <form id="locationForm">
+      <input type="text" id="city" placeholder="City (e.g. Mumbai)" required />
+      <input type="text" id="country" placeholder="Country (e.g. India)" required />
+      <button type="submit">Get Times</button>
+    </form>
 
-<div class="login-box" id="loginBox">
-    <h3>Admin Login</h3>
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-</div>
+    <p id="dateText"></p>
+    <p id="status"></p>
 
-<div class="container" id="scheduleBox" style="display:none;">
-    <table>
+    <table id="timesTable">
+      <thead>
         <tr>
-            <th>নামাজ</th>
-            <th>আজান</th>
-            <th>জামাত</th>
+          <th>Prayer</th>
+          <th>Time</th>
         </tr>
-
-        <tr><td>ফজর</td>
-            <td><input type="time" id="fajr"></td>
-            <td><input type="time" id="fajr_j"></td></tr>
-
-        <tr><td>যোহর</td>
-            <td><input type="time" id="zuhr"></td>
-            <td><input type="time" id="zuhr_j"></td></tr>
-
-        <tr><td>আসর</td>
-            <td><input type="time" id="asr"></td>
-            <td><input type="time" id="asr_j"></td></tr>
-
-        <tr><td>মাগরিব</td>
-            <td><input type="time" id="maghrib"></td>
-            <td><input type="time" id="maghrib_j"></td></tr>
-
-        <tr><td>ইশা</td>
-            <td><input type="time" id="isha"></td>
-            <td><input type="time" id="isha_j"></td></tr>
-
+      </thead>
+      <tbody id="timesBody">
+        <!-- Filled by JS -->
+      </tbody>
     </table>
-</div>
+  </div>
 
-<!-- Firebase Scripts -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
-<!-- Your JS -->
-<script src="script.js"></script>
-
+  <script src="script.js"></script>
 </body>
 </html>
