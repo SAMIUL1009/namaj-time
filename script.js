@@ -1,67 +1,69 @@
-/* Firebase Config */
-const firebaseConfig = {
-  apiKey: "AIzaSyA2e16SWt6tM3q76M8deUWiEz3cNqHCc7A",
-  authDomain: "namaz-schedule.firebaseapp.com",
-  databaseURL: "https://namaz-schedule-default-rtdb.firebaseio.com",
-  projectId: "namaz-schedule"
-};
+// script.js
+const form = document.getElementById("locationForm");
+const cityInput = document.getElementById("city");
+const countryInput = document.getElementById("country");
+const statusEl = document.getElementById("status");
+const dateText = document.getElementById("dateText");
+const timesBody = document.getElementById("timesBody");
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.database();
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const city = cityInput.value.trim();
+  const country = countryInput.value.trim();
 
-/* ADMIN EMAIL */
-const adminEmail = "samiulsk527@gmail.com";  // আপনার admin email দিন
+  if (!city || !country) return;
 
-/* -------- LOGIN -------- */
-function login() {
-    let email = document.getElementById("email").value;
-    let password = document.getElementById("password").value;
+  statusEl.textContent = "Loading prayer times...";
+  timesBody.innerHTML = "";
+  dateText.textContent = "";
 
-    auth.signInWithEmailAndPassword(email, password)
-        .then(() => {
-            document.getElementById("loginBox").style.display = "none";
-            document.getElementById("scheduleBox").style.display = "block";
+  try {
+    const url = `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(
+      city
+    )}&country=${encodeURIComponent(country)}&method=2`;
+    const res = await fetch(url);
+    if (!res.ok) {
+      throw new Error("Network response was not ok");
+    }
 
-            if (email === adminEmail) {
-                enableInputs(true);
-            } else {
-                enableInputs(false);
-            }
+    const data = await res.json();
+    if (data.code !== 200) {
+      throw new Error(data.status || "API error");
+    }
 
-            loadTimes();
-        })
-        .catch(() => alert("ভুল Email বা Password!"));
-}
+    const timings = data.data.timings;
+    const date = data.data.date.readable;
 
-/* -------- ENABLE / DISABLE INPUTS -------- */
-function enableInputs(status) {
-    document.querySelectorAll("input[type='time']").forEach(inp => {
-        inp.disabled = !status;
+    dateText.textContent = `Date: ${date}`;
+    statusEl.textContent = `Showing times for ${city}, ${country}`;
+
+    const order = [
+      "Fajr",
+      "Sunrise",
+      "Dhuhr",
+      "Asr",
+      "Maghrib",
+      "Isha"
+    ];
+
+    order.forEach((name) => {
+      const tr = document.createElement("tr");
+      const tdName = document.createElement("td");
+      const tdTime = document.createElement("td");
+
+      tdName.textContent = name;
+      tdTime.textContent = timings[name];
+
+      tr.appendChild(tdName);
+      tr.appendChild(tdTime);
+      timesBody.appendChild(tr);
     });
-}
-
-/* -------- LOAD SAVED TIMES -------- */
-function loadTimes() {
-    db.ref("times").on("value", snap => {
-        let t = snap.val();
-        if (!t) return;
-
-        for (let key in t) {
-            let field = document.getElementById(key);
-            if (field) field.value = t[key];
-        }
-    });
-}
-
-/* -------- AUTO SAVE -------- */
-function autoSave(id) {
-    db.ref("times/" + id).set(document.getElementById(id).value);
-}
-
-["fajr","fajr_j","zuhr","zuhr_j","asr","asr_j",
- "maghrib","maghrib_j","isha","isha_j"]
-.forEach(id => {
-    document.getElementById(id).addEventListener("change", () => autoSave(id));
+  } catch (err) {
+    console.error(err);
+    statusEl.textContent = "Failed to load prayer times. Please try again.";
+  }
 });
 
+// Optional: set some defaults
+cityInput.value = "Mumbai";
+countryInput.value = "India";
