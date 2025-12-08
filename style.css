@@ -1,78 +1,85 @@
+/* styles.css */
+* {
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
 body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    background: url('mosque.jpg') no-repeat center center fixed;
-    background-size: cover;
+  margin: 0;
+  padding: 0;
+  background: #f3f4f6;
 }
 
-.mosque-name {
-    text-align: center;
-    background: rgba(0,0,0,0.7);
-    color: gold;
-    padding: 12px;
-    font-size: 22px;
+.app {
+  max-width: 480px;
+  margin: 40px auto;
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
-.login-box {
-    width: 90%;
-    max-width: 350px;
-    background: rgba(0,0,0,0.6);
-    margin: 30px auto;
-    padding: 20px;
-    border-radius: 12px;
-    color: white;
-    text-align: center;
+h1 {
+  text-align: center;
+  margin-top: 0;
 }
 
-.login-box input {
-    width: 95%;
-    padding: 10px;
-    margin: 8px 0;
-    border-radius: 8px;
-    border: none;
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
-.login-box button {
-    width: 100%;
-    padding: 12px;
-    background: green;
-    color: white;
-    border: none;
-    border-radius: 8px;
+form input {
+  flex: 1 1 45%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
 }
 
-.container {
-    width: 95%;
-    max-width: 480px;
-    margin: 20px auto;
-    background: rgba(255,255,255,0.2);
-    padding: 20px;
-    border-radius: 12px;
-    backdrop-filter: blur(10px);
+form button {
+  flex: 1 1 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #10b981;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+form button:hover {
+  background: #059669;
+}
+
+#status {
+  min-height: 20px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+#dateText {
+  font-weight: 600;
+  margin: 8px 0;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    color: white;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+th, td {
+  padding: 8px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
 }
 
 th {
-    background: rgba(0,120,0,0.9);
-    padding: 12px;
-    font-size: 18px;
+  background: #f9fafb;
 }
 
-td {
-    padding: 10px;
-    font-size: 16px;
-}
-
-input[type=time] {
-    width: 95%;
-    padding: 6px;
-    font-size: 16px;
-    border-radius: 6px;
-    border: none;
+tbody tr:nth-child(even) {
+  background: #f9fafb;
 }
