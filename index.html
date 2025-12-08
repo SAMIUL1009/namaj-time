@@ -1,36 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <title>Prayer Times</title>
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>নামাজ ও জামাতের সময় সূচী</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app">
-    <h1>Prayer Times</h1>
+    <div class="prayer-container">
+        <div class="header">
+            <div class="date" id="currentDate">৮ ডিসেম্বর, ২০২৫</div>
+            <div class="location" id="location">ঢাকা, বাংলাদেশ</div>
+        </div>
 
-    <form id="locationForm">
-      <input type="text" id="city" placeholder="City (e.g. Mumbai)" required />
-      <input type="text" id="country" placeholder="Country (e.g. India)" required />
-      <button type="submit">Get Times</button>
-    </form>
+        <div class="prayer-grid" id="prayerGrid">
+            <!-- নামাজ ও জামাতের সময় এখানে দেখানো হবে -->
+        </div>
 
-    <p id="dateText"></p>
-    <p id="status"></p>
+        <div class="next-prayer" id="nextPrayer">
+            পরবর্তী নামাজ: জোহর - ১১:৫০ ঘণ্টায়
+        </div>
 
-    <table id="timesTable">
-      <thead>
-        <tr>
-          <th>Prayer</th>
-          <th>Time</th>
-        </tr>
-      </thead>
-      <tbody id="timesBody">
-        <!-- Filled by JS -->
-      </tbody>
-    </table>
-  </div>
+        <div class="footer">
+            সময়সূচী পরিবর্তনশীল। স্থানীয় মসজিদের ঘোষণার উপর নির্ভর করুন।
+        </div>
+    </div>
 
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
