@@ -2,10 +2,10 @@
 const prayers = [
     { name: 'ফজর', time: '০৫:১৫', jamaat: '০৫:২০' },
     { name: 'সূর্যোদয়', time: '০৬:৪৫', jamaat: '-' },
-    { name: 'জোহর', time: '১১:৫০', jamaat: '১২:০০' },
-    { name: 'আসর', time: '০৩:২০', jamaat: '০৩:২৫' },
-    { name: 'মাগরিব', time: '০৫:১৫', jamaat: '০৫:১৭' },
-    { name: 'ইশা', time: '০৬:৪০', jamaat: '০৬:৫০' }
+    { name: 'জোহর', time: '০১:০০', jamaat: '0১:২০' },
+    { name: 'আসর', time: '০৩:২০', jamaat: '০৩:৩৫' },
+    { name: 'মাগরিব', time: '০৫:০০', jamaat: '০৫:০৩' },
+    { name: 'ইশা', time: '০৭:১৫', jamaat: '০৭:৩০' }
 ];
 
 // সময় কার্ড তৈরি করা
@@ -43,3 +43,4 @@ updateDate();
 
 // প্রতি মিনিটে আপডেট
 setInterval(updateDate, 60000);
+
