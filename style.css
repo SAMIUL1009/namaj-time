@@ -127,6 +127,7 @@ body {
     color: #7f8c8d;
 }
 
+/* ছোট স্ক্রিনের জন্য */
 @media (max-width: 480px) {
     .prayer-container {
         padding: 30px 20px;
@@ -148,14 +149,12 @@ body {
     .jamaat-time {
         font-size: 0.8rem;
     }
+}
 
+/* creator টেক্সট */
 .creator {
     margin-top: 6px;
     font-size: 0.8rem;
     color: #9ca3af;
-    text-transform: lowercase; /* চাইলে তুলে দিতে পারো */
+    text-transform: lowercase;
 }
-
-
-
-
