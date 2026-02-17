@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>📱 Tuition attendance · mobile friendly</title>
+    <style>
+        /* MOBILE-FIRST reset & typography */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+        body {
+            background: #e9eff6;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 12px 10px 25px;
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .card {
+            max-width: 500px;  /* perfect for phones, still fine on tablets */
+            width: 100%;
+            background: white;
+            border-radius: 32px 32px 28px 28px;
+            box-shadow: 0 15px 30px -8px rgba(0, 30, 50, 0.2);
+            padding: 1.5rem 1.2rem 1.8rem;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        /* header */
+        h1 {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.4rem 0.6rem;
+            font-weight: 650;
+            font-size: 1.8rem;
+            letter-spacing: -0.02em;
+            color: #10324c;
+            margin-bottom: 1.4rem;
+            border-left: 6px solid #1e4a76;
+            padding-left: 1rem;
+        }
+        h1 span {
+            background: #1e4a76;
+            color: white;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+            margin-left: auto;
+            white-space: nowrap;
+        }
+
+        /* add student + date: stacked on mobile */
+        .panel {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+            background: #f3f9ff;
+            padding: 1.2rem 1rem 1.4rem;
+            border-radius: 32px;
+            margin-bottom: 1.8rem;
+            border: 1px solid #cde1f5;
+        }
+        .student-input {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            width: 100%;
+        }
+        .student-input input {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 2px solid #b9d2ec;
+            border-radius: 60px;
+            font-size: 1.1rem;  /* bigger on mobile */
+            background: white;
+            transition: 0.15s;
+            -webkit-appearance: none;
+        }
+        .student-input input:focus {
+            border-color: #1e4a76;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(30,74,118,0.2);
+        }
+        .student-input button {
+            background: #1e4a76;
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 1rem 1.2rem;
+            border-radius: 60px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            transition: 0.15s;
+            border: 2px solid #1e4a76;
+            width: 100%;
+            letter-spacing: 0.3px;
+            touch-action: manipulation;
+        }
+        .student-input button:active {
+            background: #0f3452;
+            transform: scale(0.98);
+        }
+
+        /* date row – full width */
+        .date-badge {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 0.3rem 0.8rem 0.3rem 1.5rem;
+            border-radius: 50px;
+            border: 2px solid #bed6f1;
+            width: 100%;
+        }
+        .date-badge label {
+            font-weight: 600;
+            color: #1e3a5f;
+            font-size: 1.2rem;
+        }
+        .date-badge input {
+            border: 1px solid #9cb9da;
+            border-radius: 40px;
+            padding: 0.7rem 1rem;
+            font-size: 1rem;
+            background: white;
+            max-width: 170px;
+            -webkit-appearance: none;
+        }
+
+        /* toolbar – stacked on smallest, but row when possible */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.7rem;
+            margin: 0 0 1.2rem 0;
+        }
+        .toolbar h2 {
+            color: #10324c;
+            font-weight: 650;
+            font-size: 1.5rem;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 0.7rem;
+            width: 100%;
+            justify-content: space-between;
+        }
+        .action-buttons button {
+            flex: 1 1 0;            /* equal width on same row */
+            background: white;
+            border: 2px solid #bed1e9;
+            padding: 0.9rem 0.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            color: #1e4a76;
+            background: #f6faff;
+            touch-action: manipulation;
+            min-height: 3.3rem;
+        }
+        .action-buttons button:active {
+            background: #e1ecfc;
+            border-color: #1e4a76;
+        }
+        /* table adjustments: horizontal scroll only if needed, but we force nice wrapping */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 24px;
+            background: transparent;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 4px 14px rgba(0,20,30,0.1);
+            min-width: 300px; /* ensures columns are readable */
+        }
+        th {
+            background: #dbeafe;
+            color: #10324c;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 1rem 0.5rem;
+            text-align: left;
+            border-bottom: 2px solid #a9c1df;
+            white-space: nowrap;
+        }
+        td {
+            padding: 0.9rem 0.5rem;
+            border-bottom: 1px solid #d5e2f0;
+            vertical-align: middle;
+        }
+        .student-name {
+            font-weight: 600;
+            color: #0b263b;
+            font-size: 1.1rem;
+            word-break: break-word;
+            white-space: normal;
+            max-width: 140px;
+        }
+        /* status select styled big & touch friendly */
+        .status-select {
+            background: #f3f9ff;
+            border: 2.5px solid #b7ceea;
+            border-radius: 50px;
+            padding: 0.75rem 2rem 0.75rem 1.2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #1e3a5f;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%231e3a5f' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.7rem center;
+            background-size: 1.5rem;
+            width: 100%;
+            min-width: 130px;
+        }
+        .status-select.present { background-color: #dcfce7; border-color: #2e9b5c; color: #0b4623; }
+        .status-select.absent { background-color: #ffe2e5; border-color: #d15a6e; color: #a01f34; }
+        .status-select.late { background-color: #fff0cf; border-color: #e5a419; color: #734d00; }
+
+        /* remove button big enough for thumb */
+        .remove-btn {
+            background: none;
+            border: 2px solid #ccdae9;
+            border-radius: 40px;
+            width: 48px;
+            height: 48px;
+            font-size: 1.9rem;
+            line-height: 1;
+            color: #6b7f99;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            touch-action: manipulation;
+            background: white;
+        }
+        .remove-btn:active {
+            background: #fee2e2;
+            border-color: #b22234;
+            color: #b52b3b;
+        }
+        td:last-child {
+            width: 60px;
+            text-align: center;
+        }
+
+        .empty-row td {
+            padding: 2.2rem 0.8rem;
+            text-align: center;
+            color: #54718b;
+            font-size: 1.1rem;
+            background: #f6fafd;
+        }
+
+        .footer-note {
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            color: #456a88;
+            text-align: center;
+            border-top: 1px dashed #aec6e1;
+            padding-top: 1.2rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem 1rem;
+        }
+        /* all caps count badges */
+        .footer-note span:first-child { color: #2b4f6e; }
+    </style>
+</head>
+<body>
+<div class="card" id="app">
+    <h1>
+        👩‍🏫 Tuition
+        <span>📱 mobile</span>
+    </h1>
+
+    <!-- ADD + DATE : stacked block for mobile -->
+    <div class="panel">
+        <div class="student-input">
+            <input type="text" id="studentNameMobile" placeholder="Full name e.g. Sara K." v-model="newStudentName" @keyup.enter="addStudent" enterkeyhint="done">
+            <button @click="addStudent" :disabled="!newStudentName.trim()" :style="{ opacity: newStudentName.trim() ? 1 : 0.8 }">
+                <span>➕</span> Add student
+            </button>
+        </div>
+        <div class="date-badge">
+            <label for="attDateMobile">📅</label>
+            <input type="date" id="attDateMobile" v-model="attendanceDate">
+        </div>
+    </div>
+
+    <!-- TOOLBAR (stacked into column on very narrow, but buttons in row) -->
+    <div class="toolbar">
+        <h2>👥 {{ students.length }}</h2>
+        <div class="action-buttons">
+            <button @click="markAllPresent"><span>✅</span> Present</button>
+            <button @click="resetAllStatus"><span>🔄</span> Reset</button>
+        </div>
+    </div>
+
+    <!-- TABLE with minimal horizontal scroll if extremely narrow (still works) -->
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Status</th>
+                    <th style="width: 60px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-if="students.length === 0" class="empty-row">
+                    <td colspan="3">✨ Add a student to begin</td>
+                </tr>
+                <tr v-for="(student, index) in students" :key="student.id">
+                    <td class="student-name">{{ student.name }}</td>
+                    <td>
+                        <select 
+                            :class="['status-select', student.status]" 
+                            v-model="student.status"
+                            @change="updateStatus"
+                        >
+                            <option value="present">✅ Present</option>
+                            <option value="absent">❌ Absent</option>
+                            <option value="late">⏳ Late</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="remove-btn" @click="removeStudent(index)" aria-label="Remove">✕</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- live summary footer (bigger numbers for readability) -->
+    <div class="footer-note">
+        <span>💾 in‑memory only</span>
+        <span v-if="students.length > 0">
+            ✅ {{ countPresent }} &nbsp; ❌ {{ countAbsent }} &nbsp; ⏳ {{ countLate }}
+        </span>
+        <span v-else>——</span>
+    </div>
+</div>
+
+<!-- Vue 3 from CDN -->
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script>
+    (function() {
+        const { createApp, ref, computed } = Vue;
+
+        const app = createApp({
+            setup() {
+                // set today's date in YYYY-MM-DD
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                const defaultDate = `${yyyy}-${mm}-${dd}`;
+
+                const students = ref([]);
+                const newStudentName = ref('');
+                const attendanceDate = ref(defaultDate);
+
+                // tiny id helper
+                let idCounter = 200;
+                const generateId = () => `m_${idCounter++}_${Date.now()}`;
+
+                const addStudent = () => {
+                    const name = newStudentName.value.trim();
+                    if (name === '') return;
+                    students.value.push({
+                        id: generateId(),
+                        name: name,
+                        status: 'present'
+                    });
+                    newStudentName.value = '';
+                };
+
+                const removeStudent = (index) => {
+                    if (confirm(`Remove ${students.value[index].name}?`)) {
+                        students.value.splice(index, 1);
+                    }
+                };
+
+                const updateStatus = () => {
+                    // v-model handles it, no extra logic needed
+                };
+
+                const markAllPresent = () => {
+                    if (students.value.length === 0) return;
+                    students.value.forEach(s => s.status = 'present');
+                };
+
+                const resetAllStatus = () => {
+                    if (students.value.length && confirm('Set all statuses to present?')) {
+                        students.value.forEach(s => s.status = 'present');
+                    }
+                };
+
+                const countPresent = computed(() => students.value.filter(s => s.status === 'present').length);
+                const countAbsent = computed(() => students.value.filter(s => s.status === 'absent').length);
+                const countLate = computed(() => students.value.filter(s => s.status === 'late').length);
+
+                return {
+                    students,
+                    newStudentName,
+                    attendanceDate,
+                    addStudent,
+                    removeStudent,
+                    updateStatus,
+                    markAllPresent,
+                    resetAllStatus,
+                    countPresent,
+                    countAbsent,
+                    countLate
+                };
+            }
+        });
+
+        app.mount('#app');
+    })();
+</script>
+<!-- ensure that select background reflects chosen status, also on mobile -->
+</body>
+</html>
